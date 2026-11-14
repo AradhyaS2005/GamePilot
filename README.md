@@ -1,5 +1,5 @@
 
-# GamePilot 🎮
+# GamePilot 
 
 GamePilot is a Windows desktop application that transforms a game controller into a customizable mouse and keyboard controller.
 
