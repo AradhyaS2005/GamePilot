@@ -223,7 +223,7 @@ class GamePilot(QMainWindow): # our class inhereting from QMainWindow class
         self.info_layout.addWidget(hat_group)
 
     def update_controller(self):
-
+        
         if not pygame.get_init() or not pygame.display.get_init():
             self.timer.stop()
             self.status.setText("Pygame subsystem not initialized")
@@ -294,11 +294,16 @@ class GamePilot(QMainWindow): # our class inhereting from QMainWindow class
                     f"Hat {i}: {value}"
                 )
 
-        except  pygame.error:
-            self.connect_controller() # if error happens try to reconnect the controller
+        except  pygame.error as error:
+            print(f"Controller error: {error}")
+            import traceback
+            traceback.print_exc()
+            self.timer.stop()
+            #self.connect_controller() # if error happens try to reconnect the controller
 
     def closeEvent(self, event):
 
+        self.timer.stop()
         pygame.quit()
         event.accept()
 
