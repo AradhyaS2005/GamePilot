@@ -1,3 +1,71 @@
+"""
+GAMEPILOT - XINPUT CONTROLLER READING FLOW
+
+HOW IT WORKS:
+1. ctypes.WinDLL() loads the Windows XInput DLL.
+2. XINPUT_GAMEPAD defines the controller input data structure.
+3. XINPUT_STATE defines the complete controller state.
+4. XInputGetState() retrieves input from controller index 0.
+5. ctypes.byref(state) passes the state structure by reference.
+6. Windows fills the structure with current controller data.
+7. state.Gamepad accesses the controller's input data.
+8. pad.wButtons contains the pressed button bit flags.
+9. Bitwise AND (&) checks individual button flags.
+10. BUTTONS dictionary converts hexadecimal flags into button names.
+11. Current state is compared with previous_state to detect changes.
+12. Input information is printed when the controller state changes.
+
+CONTROLLER INPUT FLOW:
+
+Physical Controller
+       |
+       v
+Windows XInput API (XInput1_4.dll)
+       |
+       v
+XInputGetState()
+       |
+       v
+XINPUT_STATE
+       |
+       v
+XINPUT_GAMEPAD
+       |
+       v
+Read buttons / triggers / joystick axes
+       |
+       v
+Bitwise AND (&) + BUTTONS dictionary
+       |
+       v
+Identify pressed buttons
+       |
+       v
+Print controller input
+
+IMPORTANT COMPONENTS:
+- ctypes: Communicates with Windows DLLs.
+- wintypes: Provides Windows-compatible data types.
+- XINPUT_GAMEPAD: Stores buttons, triggers and joystick values.
+- XINPUT_STATE: Stores the complete controller state.
+- BUTTONS: Maps hexadecimal button flags to readable names.
+- XInputGetState(): Reads controller input.
+- previous_state: Helps detect input changes.
+- time.sleep(): Controls polling frequency.
+
+EXAMPLE:
+If A is pressed:
+pad.wButtons = 0x1000
+
+pad.wButtons & 0x1000 != 0
+Therefore, A is pressed.
+
+NOTE:
+This program only reads controller inputs.
+Keyboard/mouse emulation and profile-based mapping
+will be implemented separately in GamePilot.
+"""
+
 import ctypes
 from ctypes import wintypes
 import time
@@ -86,17 +154,18 @@ try:
                 print("Buttons:", pressed)
                 print("Triggers:", pad.bLeftTrigger, pad.bRightTrigger)
                 print("Left stick:", pad.sThumbLX, pad.sThumbLY)
-                print("Left stick:", pad.sThumbRX, pad.sThumbRY)
+                print("Right stick:", pad.sThumbRX, pad.sThumbRY)
                 print("-" * 40)
 
                 previous_state = current_state
 
-            elif previous_state is not None:
+        else:
+            if previous_state is not None:
                 print("Controller disconnected.")
                 previous_state = None
 
             time.sleep(0.4)
 
 except KeyboardInterrupt:
-    print("\nTest stopped.")                
+    print("\nTest stopped.")                 
 
