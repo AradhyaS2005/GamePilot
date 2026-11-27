@@ -52,7 +52,7 @@ class InputMapper:
         if left_y > self.deadzone:            # positive Y = down
             actions["MOVE_DOWN"] = True       # acc to XInput
         
-        elif left_y < -self.deadzone:         # negative Y = down
+        elif left_y < -self.deadzone:         # negative Y = up
             actions["MOVE_UP"] = True         # acc to XInput
 
         # 3. Map triggers
@@ -60,6 +60,6 @@ class InputMapper:
             actions["LEFT_TRIGGER"] = True
 
         if controller_state["right_trigger"] > 30:
-            action["RIGHT_TRIGGER"] = True 
+            actions["RIGHT_TRIGGER"] = True 
 
         return actions                            
